@@ -9,8 +9,8 @@ TODO Wymyślić algorytm przeszukiwania macierzy
 
 """
 import cv2
-from flood import Flood
-from cascade import Cascade
+from algorithms.flood import Flood
+from algorithms.cascade import Cascade
 
 class GcodeGenerator:
 
