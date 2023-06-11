@@ -1,10 +1,9 @@
-"""
-This class contains logic responsible for writing gcode commands to file.
-Full command list with explenation you can find here:
-https://www.thomasnet.com/articles/custom-manufacturing-fabricating/g-code-commands/
-"""
-
-class gcodeWriter: 
+class GcodeWriter: 
+    """
+    This class contains logic responsible for writing gcode commands to file.
+    Full command list with explenation you can find here:
+    https://www.thomasnet.com/articles/custom-manufacturing-fabricating/g-code-commands/
+    """
 
     commands = {
         'positioning': 'G0 ',

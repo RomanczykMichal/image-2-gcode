@@ -9,25 +9,28 @@ TODO Wymyślić algorytm przeszukiwania macierzy
 
 """
 import cv2
+from flood import Flood
 
-class gcodeGenerator:
+class GcodeGenerator:
 
     def __init__(self, file) -> None:
         self.file = file
         self.lines = []
         self.options = []
 
-    def generate_gcode(self):
+    def generate_gcode(self, algorithm):
         self.cv2_image = self.__read_image(self.file)
-        self.__find_lines('flood')
+        self.__find_lines(algorithm)
+        cv2.imwrite('./images/test.png', self.cv2_image)
         return self.__generate_gcode_options()
 
     def __find_lines(self, option): #making room for new algorithms.
         match option:
             case 'flood':
-                pass
+                self.lines, self.cv2_image = Flood().flood_algorithm(self.cv2_image)
             case '_':
                 print('This option doesn\'t exist.')
+
 
     def __read_image(self, file):
         return cv2.imread(file, flags=cv2.IMREAD_GRAYSCALE)
