@@ -11,19 +11,24 @@ TODO Wymyślić algorytm przeszukiwania macierzy
 import cv2
 from algorithms.flood import Flood
 from algorithms.cascade import Cascade
+from gcodeWriter import GcodeWriter
 
 class GcodeGenerator:
 
-    def __init__(self, file) -> None:
+    def __init__(self, file, save, dimensions) -> None:
         self.file = file
+        self.writer = GcodeWriter(save)
+        self.dimensions = dimensions.split(';')
         self.lines = []
         self.options = []
 
     def generate_gcode(self, algorithm):
         self.cv2_image = self.__read_image(self.file)
         self.__find_lines(algorithm)
+        self.__optimize_lines()
+        self.__generate_gcode_options()
         cv2.imwrite('./images/test.png', self.cv2_image)
-        return self.__generate_gcode_options()
+        self.writer.save_file()
 
     def __find_lines(self, option): #making room for new algorithms.
         match option:
@@ -34,6 +39,17 @@ class GcodeGenerator:
             case '_':
                 print('This option doesn\'t exist.')
 
+    def __optimize_lines(self):
+        """
+        Method is responsible for optimization of lines. For now it only translates dimensions from pixels to mm.
+        TODO optimization of points to plot e.g. if we have straight line there is no need to plot all the points,
+             but we can take first and last point between it.
+        """
+        height, width = self.cv2_image.shape
+        for line in self.lines:
+            for point in line:
+                point['x'] = (point['x'] / width) * float(self.dimensions[0])
+                point['y'] = (point['y'] / height) * float(self.dimensions[1])
 
     def __read_image(self, file):
         return cv2.imread(file, flags=cv2.IMREAD_GRAYSCALE)
@@ -51,7 +67,7 @@ class GcodeGenerator:
         Generate gcode for one line.
         Arguments:
             line: numpay array of points which reflects line.
-        Returns:
-            Gcode commands for one line.
         """
-        pass
+        self.writer.move_to_point(line[0])
+        for point_index in range(1, len(line)):
+            self.writer.draw_line(line[point_index])

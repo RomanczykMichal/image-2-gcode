@@ -40,6 +40,13 @@ class GcodeWriter:
             self.gcode += option
         self.gcode += self.new_line
 
+    def move_to_point(self, point):
+        self.gcode += self.commands['positioning'] + self.commands['x'] + str(point['x']) + self.commands['y'] + str(point['y']) + self.commands['z'] + '3' + self.new_line
+        self.gcode += self.commands['positioning'] + self.commands['z'] + '0' + self.new_line
+
+    def draw_line(self, point):
+        self.gcode += self.commands['linear_interpolation'] + self.commands['x'] + str(point['x']) + self.commands['y'] + str(point['y']) + self.new_line
+
     def save_file(self):
         self.__write_last_line()
         with open('image.gcode', 'w') as file:

@@ -1,4 +1,3 @@
-from gcodeWriter import GcodeWriter
 from gcodeGenerator import GcodeGenerator
 import argparse
 
@@ -12,10 +11,10 @@ def init_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", type=str, default="./images/1.jpg", help='JPG file which you want to convert to gcode.')
     parser.add_argument("-s", "--save", type=str, default='./', help='directory to save gcode file. Default is current directory.')
+    parser.add_argument("-d", "--dimensions", type=str, default='200;200', help='dimensions of plot (\'width;height\' [mm]).')
     return parser.parse_args()
 
 if __name__ == '__main__':
     args = init_parser()
-    writer = GcodeWriter(args.save)
-    generator = GcodeGenerator(args.file)
-    gcode = generator.generate_gcode('flood')
+    generator = GcodeGenerator(args.file, args.save, args.dimensions)
+    generator.generate_gcode('flood')
