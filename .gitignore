@@ -398,3 +398,5 @@ FodyWeavers.xsd
 *.sln.iml
 .vscode/launch.json
 images/1.jpg
+.vscode/settings.json
+images/test.png

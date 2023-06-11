@@ -10,6 +10,7 @@ TODO Wymyślić algorytm przeszukiwania macierzy
 """
 import cv2
 from flood import Flood
+from cascade import Cascade
 
 class GcodeGenerator:
 
@@ -28,6 +29,8 @@ class GcodeGenerator:
         match option:
             case 'flood':
                 self.lines, self.cv2_image = Flood().flood_algorithm(self.cv2_image)
+            case 'cascade':
+                self.lines, self.cv2_image = Cascade().cascade_algorithm(self.cv2_image)
             case '_':
                 print('This option doesn\'t exist.')
 
