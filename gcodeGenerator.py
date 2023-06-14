@@ -13,12 +13,12 @@ from algorithms.flood import Flood
 from algorithms.cascade import Cascade
 from gcodeWriter import GcodeWriter
 
-class GcodeGenerator:
 
+class GcodeGenerator:
     def __init__(self, file, save, dimensions) -> None:
         self.file = file
         self.writer = GcodeWriter(save)
-        self.dimensions = dimensions.split(';')
+        self.dimensions = dimensions.split(";")
         self.lines = []
         self.options = []
 
@@ -28,17 +28,17 @@ class GcodeGenerator:
         self.__find_lines(algorithm)
         self.__optimize_lines()
         self.__generate_gcode_options()
-        cv2.imwrite('./images/test.png', self.cv2_image)
+        cv2.imwrite("./images/test.png", self.cv2_image)
         self.writer.save_file()
 
-    def __find_lines(self, option): #making room for new algorithms.
+    def __find_lines(self, option):  # making room for new algorithms.
         match option:
-            case 'flood':
+            case "flood":
                 self.lines, self.cv2_image = Flood().flood_algorithm(self.cv2_image)
-            case 'cascade':
+            case "cascade":
                 self.lines, self.cv2_image = Cascade().cascade_algorithm(self.cv2_image)
-            case '_':
-                print('This option doesn\'t exist.')
+            case "_":
+                print("This option doesn't exist.")
 
     def __optimize_lines(self):
         """
@@ -52,26 +52,42 @@ class GcodeGenerator:
             optimized_line = []
             point = {"x": 0, "y": 0}
             skip_flag = False
-            for index in range(len(line)-2):
+            for index in range(len(line) - 2):
                 if skip_flag:
                     skip_flag = False
                     continue
 
                 if index == 0:
-                    optimized_line.append({
-                        "x": (line[index]['x'] / width) * float(self.dimensions[0]),
-                        "y": (line[index]['y'] / height) * float(self.dimensions[1])})
+                    optimized_line.append(
+                        {
+                            "x": (line[index]["x"] / width) * float(self.dimensions[0]),
+                            "y": (line[index]["y"] / height)
+                            * float(self.dimensions[1]),
+                        }
+                    )
                     continue
 
-                if not self.__is_on_the_same_line(line[index], line[index+1], line[index+2]):
-                    optimized_line.append({
-                        "x": (line[index+1]['x'] / width) * float(self.dimensions[0]),
-                        "y": (line[index+1]['y'] / height) * float(self.dimensions[1])})
-                    optimized_line.append({
-                        "x": (line[index+2]['x'] / width) * float(self.dimensions[0]),
-                        "y": (line[index+2]['y'] / height) * float(self.dimensions[1])})
+                if not self.__is_on_the_same_line(
+                    line[index], line[index + 1], line[index + 2]
+                ):
+                    optimized_line.append(
+                        {
+                            "x": (line[index + 1]["x"] / width)
+                            * float(self.dimensions[0]),
+                            "y": (line[index + 1]["y"] / height)
+                            * float(self.dimensions[1]),
+                        }
+                    )
+                    optimized_line.append(
+                        {
+                            "x": (line[index + 2]["x"] / width)
+                            * float(self.dimensions[0]),
+                            "y": (line[index + 2]["y"] / height)
+                            * float(self.dimensions[1]),
+                        }
+                    )
                     skip_flag = True
-            
+
             optimized_lines.append(optimized_line)
         self.lines = optimized_lines
 
@@ -80,17 +96,17 @@ class GcodeGenerator:
         Calculates linear equation from point_a and point_b. Then checks if point_c is on the line
         """
         a = (point_b["y"] - point_a["y"]) / (point_b["x"] - point_a["x"])
-        b = point_a["y"] - a*point_a["x"]
+        b = point_a["y"] - a * point_a["x"]
         return point_c["y"] == a * point_c["x"] + b
 
     def __read_image(self, file):
         return cv2.imread(file, flags=cv2.IMREAD_GRAYSCALE)
-    
+
     def __generate_gcode_options(self):
         """
         Generate gcode for each line.
         Returns:
-            List of gcode commands for each line. 
+            List of gcode commands for each line.
         """
         return [self.__generate_gcode_option(line) for line in self.lines]
 
