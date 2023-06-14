@@ -21,7 +21,8 @@ class GcodeWriter:
         'home': 'G28 ',
         'absolute_mode': 'G90 ',
         'end_of_program': 'M30 ',
-        'new_line': '\n'
+        'bed_off': 'M140 S0 ',
+        'extruder_off': 'M104 S0 ',
     }
     new_line = '\n'
     X_offset = 50 #in mm
@@ -61,6 +62,9 @@ class GcodeWriter:
             
     def __write_init_line(self):
         self.gcode += self.commands['units'] + self.commands['plane'] + self.commands['absolute_mode'] + self.commands['feed'] + self.commands['home'] + self.new_line
+        self.gcode += self.commands['bed_off'] + self.new_line
+        self.gcode += self.commands['extruder_off'] + self.new_line
+        self.gcode += self.commands['home'] + self.new_line
 
     def __write_last_line(self):
         self.gcode += self.commands['end_of_program']
