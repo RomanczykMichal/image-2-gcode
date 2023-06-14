@@ -11,7 +11,7 @@ def init_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", type=str, default="./images/1.jpg", help='JPG file which you want to convert to gcode.')
     parser.add_argument("-s", "--save", type=str, default='./', help='directory to save gcode file. Default is current directory.')
-    parser.add_argument("-d", "--dimensions", type=str, default='200;200', help='dimensions of plot (\'width;height\' [mm]).')
+    parser.add_argument("-d", "--dimensions", type=str, default='150;150', help='dimensions of plot (\'width;height\' [mm]).')
     return parser.parse_args()
 
 if __name__ == '__main__':

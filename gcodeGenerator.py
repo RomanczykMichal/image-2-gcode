@@ -24,6 +24,7 @@ class GcodeGenerator:
 
     def generate_gcode(self, algorithm):
         self.cv2_image = self.__read_image(self.file)
+        self.cv2_image = cv2.flip(self.cv2_image, -1)
         self.__find_lines(algorithm)
         self.__optimize_lines()
         self.__generate_gcode_options()
@@ -45,11 +46,42 @@ class GcodeGenerator:
         TODO optimization of points to plot e.g. if we have straight line there is no need to plot all the points,
              but we can take first and last point between it.
         """
+        optimized_lines = []
         height, width = self.cv2_image.shape
         for line in self.lines:
-            for point in line:
-                point['x'] = (point['x'] / width) * float(self.dimensions[0])
-                point['y'] = (point['y'] / height) * float(self.dimensions[1])
+            optimized_line = []
+            point = {"x": 0, "y": 0}
+            skip_flag = False
+            for index in range(len(line)-2):
+                if skip_flag:
+                    skip_flag = False
+                    continue
+
+                if index == 0:
+                    optimized_line.append({
+                        "x": (line[index]['x'] / width) * float(self.dimensions[0]),
+                        "y": (line[index]['y'] / height) * float(self.dimensions[1])})
+                    continue
+
+                if not self.__is_on_the_same_line(line[index], line[index+1], line[index+2]):
+                    optimized_line.append({
+                        "x": (line[index+1]['x'] / width) * float(self.dimensions[0]),
+                        "y": (line[index+1]['y'] / height) * float(self.dimensions[1])})
+                    optimized_line.append({
+                        "x": (line[index+2]['x'] / width) * float(self.dimensions[0]),
+                        "y": (line[index+2]['y'] / height) * float(self.dimensions[1])})
+                    skip_flag = True
+            
+            optimized_lines.append(optimized_line)
+        self.lines = optimized_lines
+
+    def __is_on_the_same_line(self, point_a, point_b, point_c):
+        """
+        Calculates linear equation from point_a and point_b. Then checks if point_c is on the line
+        """
+        a = (point_b["y"] - point_a["y"]) / (point_b["x"] - point_a["x"])
+        b = point_a["y"] - a*point_a["x"]
+        return point_c["y"] == a * point_c["x"] + b
 
     def __read_image(self, file):
         return cv2.imread(file, flags=cv2.IMREAD_GRAYSCALE)
@@ -68,6 +100,8 @@ class GcodeGenerator:
         Arguments:
             line: numpay array of points which reflects line.
         """
+        self.writer.lift()
         self.writer.move_to_point(line[0])
+        self.writer.lower()
         for point_index in range(1, len(line)):
             self.writer.draw_line(line[point_index])
