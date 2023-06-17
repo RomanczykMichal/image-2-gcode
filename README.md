@@ -1,5 +1,5 @@
 # image-2-gcode
-This script is responsible for translation of JPG file into gcode file. This project is inspired by work of @pavlovpulus.
+This script is responsible for translation of JPG or SVG file into gcode file. This project is inspired by work of @pavlovpulus.
 
 Enter this command to run script:
 ```
@@ -10,7 +10,7 @@ Below you fill find list of available arguments:
 ```
 options:
   -h, --help                    show this help message and exit
-  -f, --file         FILE       JPG file which you want to convert to gcode.
+  -f, --file         FILE       JPG or SVG file which you want to convert to gcode.
   -s, --save         SAVE       directory to save gcode file. Default is current directory.
   -d, --dimensions   DIMENSIONS dimensions of plot ('width;height' [mm]).
 ```
@@ -20,3 +20,7 @@ I have prepared 2 STL files which you can find under **stl files** directory. Th
 Assembly of elements is realy simple. Bolts used to screw things up are the same as in original 3d printer extruder.
 
 <img src="https://github.com/RomanczykMichal/image-2-gcode/assets/80456075/60a76202-350d-48ea-bb02-4d6cc934bf1b" data-canonical-src="https://github.com/RomanczykMichal/image-2-gcode/assets/80456075/60a76202-350d-48ea-bb02-4d6cc934bf1b" width="350" height="540" />
+
+
+JPG files are not working as they should be. I need to work more on algorithms for line detection.
+SVG files are created using Processing Foundation software. 

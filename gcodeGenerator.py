@@ -17,6 +17,7 @@ from gcodeWriter import GcodeWriter
 class GcodeGenerator:
     def __init__(self, file, save, dimensions) -> None:
         self.file = file
+        self.is_jpg = str(file).endswith('jpg')
         self.writer = GcodeWriter(save)
         self.dimensions = dimensions.split(";")
         self.lines = []
@@ -25,18 +26,25 @@ class GcodeGenerator:
     def generate_gcode(self, algorithm):
         self.cv2_image = self.__read_image(self.file)
         self.cv2_image = cv2.flip(self.cv2_image, -1)
-        self.__find_lines(algorithm)
-        self.__optimize_lines()
-        self.__generate_gcode_options()
-        cv2.imwrite("./images/test.png", self.cv2_image)
-        self.writer.save_file()
+        if self.is_jpg:
+            self.__find_lines(algorithm)
+            self.__optimize_lines()
+            self.__generate_gcode_options()
+            cv2.imwrite("./images/test.png", self.cv2_image)
+            self.writer.save_file()
+        else:
+            self.__convert_svg()
+
+    def __convert_svg(self):
+        pass
 
     def __find_lines(self, option):  # making room for new algorithms.
         match option:
             case "flood":
                 self.lines, self.cv2_image = Flood().flood_algorithm(self.cv2_image)
             case "cascade":
-                self.lines, self.cv2_image = Cascade().cascade_algorithm(self.cv2_image)
+                #self.lines, self.cv2_image = Cascade().cascade_algorithm(self.cv2_image)
+                pass
             case "_":
                 print("This option doesn't exist.")
 

@@ -15,8 +15,8 @@ def init_parser():
         "-f",
         "--file",
         type=str,
-        default="./images/1.jpg",
-        help="JPG file which you want to convert to gcode.",
+        default="./images/duck.jpg",
+        help="JPG or SVG file which you want to convert to gcode.",
     )
     parser.add_argument(
         "-s",
