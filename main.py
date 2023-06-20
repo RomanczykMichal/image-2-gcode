@@ -15,14 +15,13 @@ def init_parser():
         "-f",
         "--file",
         type=str,
-        default="./images/duck.jpg",
         help="JPG or SVG file which you want to convert to gcode.",
     )
     parser.add_argument(
         "-s",
         "--save",
         type=str,
-        default="./",
+        default="./images",
         help="directory to save gcode file. Default is current directory.",
     )
     parser.add_argument(

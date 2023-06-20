@@ -1,6 +1,11 @@
 # image-2-gcode
 This script is responsible for translation of JPG or SVG file into gcode file. This project is inspired by work of @pavlovpulus.
 
+Install required packages:
+```
+pip install --upgrade -r requirements.txt
+```
+
 Enter this command to run script:
 ```
 python3 ./main.py [arguments list]
@@ -24,3 +29,4 @@ Assembly of elements is realy simple. Bolts used to screw things up are the same
 
 JPG files are not working as they should be. I need to work more on algorithms for line detection.
 SVG files are created using Processing Foundation software. 
+Big thanks to @PadLex for svg-to-gcode library :)
