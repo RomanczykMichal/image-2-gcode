@@ -28,5 +28,7 @@ Assembly of elements is realy simple. Bolts used to screw things up are the same
 
 
 JPG files are not working as they should be. I need to work more on algorithms for line detection.
+
 SVG files are created using Processing Foundation software. 
+
 Big thanks to @PadLex for svg-to-gcode library :)
